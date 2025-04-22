@@ -2,76 +2,42 @@
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <title>Visor 3D Simple</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Visor 3D con model-viewer</title>
+    <!-- Cargar el script para model-viewer -->
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@google/model-viewer@2.10.0/dist/model-viewer.js"></script>
     <style>
       body {
         margin: 0;
-        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #121212;
       }
-      canvas {
-        display: block;
+      model-viewer {
+        width: 100%;
+        height: 100%;
+        max-width: 900px;
+        max-height: 900px;
       }
     </style>
   </head>
   <body>
-    <script type="module">
-      import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.module.js';
-      import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.161.0/examples/jsm/loaders/GLTFLoader.js';
-      import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.161.0/examples/jsm/controls/OrbitControls.js';
-
-      let scene, camera, renderer, controls;
-
-      init();
-      animate();
-
-      function init() {
-        scene = new THREE.Scene();
-        scene.background = new THREE.Color(0x121212); // Fondo negro suave
-
-        camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
-        camera.position.set(0, 1, 3);
-
-        renderer = new THREE.WebGLRenderer({ antialias: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        document.body.appendChild(renderer.domElement);
-
-        controls = new OrbitControls(camera, renderer.domElement);
-
-        // 💡 Luces con intensidad más baja
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
-        scene.add(ambientLight);
-
-        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
-        directionalLight.position.set(2, 4, 5);
-        scene.add(directionalLight);
-
-        // 📦 Cargar modelo
-        const loader = new GLTFLoader();
-        loader.load('modelo.glb', function (gltf) {
-          const model = gltf.scene;
-
-          model.traverse((node) => {
-            if (node.isMesh && (!node.material || node.material.transparent && node.material.opacity === 0)) {
-              node.material = new THREE.MeshStandardMaterial({ color: 0x8888ff }); // azul claro si no hay material
-            }
-          });
-
-          scene.add(model);
-        }, undefined, function (error) {
-          console.error('Error cargando el modelo:', error);
-        });
-
-        window.addEventListener('resize', () => {
-          camera.aspect = window.innerWidth / window.innerHeight;
-          camera.updateProjectionMatrix();
-          renderer.setSize(window.innerWidth, window.innerHeight);
-        });
-      }
-
-      function animate() {
-        requestAnimationFrame(animate);
-        renderer.render(scene, camera);
-      }
-    </script>
+    <!-- Visor 3D usando model-viewer -->
+    <model-viewer
+      src="modelo.glb" 
+      ar
+      ar-modes="webxr scene-viewer quick-look"
+      camera-controls
+      tone-mapping="neutral"
+      poster="poster.webp"
+      shadow-intensity="1.04"
+      exposure="0.3"
+      shadow-softness="0.7"
+      camera-orbit="-29.38deg 71.86deg 7.027m"
+      field-of-view="30deg"
+    >
+    </model-viewer>
   </body>
 </html>
