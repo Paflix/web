@@ -1,74 +1,80 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <title>Visor 3D</title>
-  <style>
-    body { margin: 0; overflow: hidden; }
-    canvas { display: block; }
-  </style>
-</head>
-<body>
-  <script type="module">
-    import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.module.js';
-    import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.161.0/examples/jsm/loaders/GLTFLoader.js';
-    import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.161.0/examples/jsm/controls/OrbitControls.js';
+  <head>
+    <meta charset="UTF-8" />
+    <title>Visor 3D</title>
+    <style>
+      body {
+        margin: 0;
+        overflow: hidden;
+      }
+      canvas {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <script type="module">
+      import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.module.js';
+      import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.161.0/examples/jsm/loaders/GLTFLoader.js';
+      import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.161.0/examples/jsm/controls/OrbitControls.js';
 
-    let scene, camera, renderer, controls;
+      let scene, camera, renderer, controls;
 
-    init();
-    animate();
+      init();
+      animate();
 
-    function init() {
-      // Escena
-      scene = new THREE.Scene();
-      scene.background = new THREE.Color(0xf0f0f0); // Fondo claro, puedes cambiar el color
+      function init() {
+        // Escena
+        scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x202020); // fondo gris oscuro
 
-      // Cámara
-      camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
-      camera.position.set(0, 1.5, 3);
+        // Cámara
+        camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
+        camera.position.set(0, 1, 3);
 
-      // Render
-      renderer = new THREE.WebGLRenderer({ antialias: true });
-      renderer.setSize(window.innerWidth, window.innerHeight);
-      document.body.appendChild(renderer.domElement);
+        // Render
+        renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
 
-      // Luz
-      const light = new THREE.HemisphereLight(0xffffff, 0x444444, 1.5);
-      light.position.set(0, 20, 0);
-      scene.add(light);
+        // Controles
+        controls = new OrbitControls(camera, renderer.domElement);
 
-      const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-      directionalLight.position.set(3, 10, 10);
-      scene.add(directionalLight);
+        // Luces
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+        scene.add(ambientLight);
 
-      // Controles
-      controls = new OrbitControls(camera, renderer.domElement);
-      controls.target.set(0, 1, 0);
-      controls.update();
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+        directionalLight.position.set(2, 4, 5);
+        scene.add(directionalLight);
 
-      // Modelo
-      const loader = new GLTFLoader();
-      loader.load('modelo.glb', function (gltf) {
-        scene.add(gltf.scene);
-      }, undefined, function (error) {
-        console.error('Error al cargar el modelo:', error);
-      });
+        // Cargar modelo
+        const loader = new GLTFLoader();
+        loader.load('modelo.glb', function (gltf) {
+          const model = gltf.scene;
 
-      // Resize
-      window.addEventListener('resize', onWindowResize);
-    }
+          model.traverse((node) => {
+            if (node.isMesh && !node.material) {
+              node.material = new THREE.MeshStandardMaterial({ color: 0xaaaaaa });
+            }
+          });
 
-    function onWindowResize() {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
-    }
+          scene.add(model);
+        });
 
-    function animate() {
-      requestAnimationFrame(animate);
-      renderer.render(scene, camera);
-    }
-  </script>
-</body>
+        // Resize
+        window.addEventListener('resize', () => {
+          camera.aspect = window.innerWidth / window.innerHeight;
+          camera.updateProjectionMatrix();
+          renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+      }
+
+      function animate() {
+        requestAnimationFrame(animate);
+        renderer.render(scene, camera);
+      }
+    </script>
+  </body>
 </html>
