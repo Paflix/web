@@ -1,45 +1,8 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Visor 3D con model-viewer</title>
-    <!-- Cargar el script para model-viewer -->
-    <script type="module" src="https://cdn.jsdelivr.net/npm/@google/model-viewer@2.10.0/dist/model-viewer.js"></script>
-    <style>
-      body {
-        margin: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        background-color: #121212;
-      }
-      model-viewer {
-        width: 100%;
-        height: 100%;
-        max-width: 900px;
-        max-height: 900px;
-      }
-    </style>
-  </head>
+
   <body>
     <!-- Visor 3D usando model-viewer -->
-    <model-viewer
-      src="modelo.glb" 
-      ar
-      ar-modes="webxr scene-viewer quick-look"
-      camera-controls
-      tone-mapping="neutral"
-      poster="poster.webp"
-      shadow-intensity="1.04"
-      exposure="0.3"
-      shadow-softness="0.7"
-      camera-orbit="-29.38deg 71.86deg 7.027m"
-      field-of-view="30deg"
-      background-color="#000000"  <!-- Fondo negro para mayor contraste -->
-      environment-image="https://cdn.jsdelivr.net/npm/@google/model-viewer@2.10.0/assets/environment/photostudio1.jpg" <!-- Agregar entorno -->
-    >
-    </model-viewer>
+<model-viewer src="modelo.glb" ar ar-modes="webxr scene-viewer quick-look" camera-controls tone-mapping="neutral" poster="poster.webp" shadow-intensity="1.04" exposure="0.3" shadow-softness="0.7" camera-orbit="-29.38deg 71.86deg 7.027m" field-of-view="30deg"> </model-viewer>
   </body>
 </html>
