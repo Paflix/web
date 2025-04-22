@@ -1,8 +1,21 @@
-<!DOCTYPE html>
-<html lang="es">
-
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>&lt;model-viewer&gt; template</title>
+    <meta charset="utf-8">
+    <meta name="description" content="&lt;model-viewer&gt; template">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link type="text/css" href="./styles.css" rel="stylesheet"/>
+  </head>
   <body>
-    <!-- Visor 3D usando model-viewer -->
-<model-viewer src="modelo.glb" ar ar-modes="webxr scene-viewer quick-look" camera-controls tone-mapping="neutral" poster="poster.webp" shadow-intensity="1.04" exposure="0.3" shadow-softness="0.7" camera-orbit="-29.38deg 71.86deg 7.027m" field-of-view="30deg"> </model-viewer>
+    <!-- <model-viewer> HTML element -->
+    <model-viewer src="Astronaut.glb" ar ar-modes="webxr scene-viewer quick-look" camera-controls tone-mapping="neutral" poster="poster.webp" shadow-intensity="0" environment-image="legacy" exposure="1" shadow-softness="1" camera-orbit="-17.4deg 76.14deg 4.288m" field-of-view="30deg">
+      <div class="progress-bar hide" slot="progress-bar">
+          <div class="update-bar"></div>
+      </div>
+    </model-viewer>  
+    <script src="script.js"></script>
+    <!-- Loads <model-viewer> for browsers: -->
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
   </body>
 </html>
