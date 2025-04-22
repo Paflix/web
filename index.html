@@ -1,14 +1,74 @@
-<html>
-  <head>
-    <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
-  </head>
-  <body>
-    <a-scene>
-      <a-assets>
-        <a-asset-item id="model" src="modelo.glb"></a-asset-item>
-      </a-assets>
-      <a-entity gltf-model="#model" position="0 1 -3" scale="1 1 1"></a-entity>
-      <a-sky color="#ECECEC"></a-sky>
-    </a-scene>
-  </body>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Visor 3D</title>
+  <style>
+    body { margin: 0; overflow: hidden; }
+    canvas { display: block; }
+  </style>
+</head>
+<body>
+  <script type="module">
+    import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.module.js';
+    import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.161.0/examples/jsm/loaders/GLTFLoader.js';
+    import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.161.0/examples/jsm/controls/OrbitControls.js';
+
+    let scene, camera, renderer, controls;
+
+    init();
+    animate();
+
+    function init() {
+      // Escena
+      scene = new THREE.Scene();
+      scene.background = new THREE.Color(0xf0f0f0); // Fondo claro, puedes cambiar el color
+
+      // Cámara
+      camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
+      camera.position.set(0, 1.5, 3);
+
+      // Render
+      renderer = new THREE.WebGLRenderer({ antialias: true });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      document.body.appendChild(renderer.domElement);
+
+      // Luz
+      const light = new THREE.HemisphereLight(0xffffff, 0x444444, 1.5);
+      light.position.set(0, 20, 0);
+      scene.add(light);
+
+      const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+      directionalLight.position.set(3, 10, 10);
+      scene.add(directionalLight);
+
+      // Controles
+      controls = new OrbitControls(camera, renderer.domElement);
+      controls.target.set(0, 1, 0);
+      controls.update();
+
+      // Modelo
+      const loader = new GLTFLoader();
+      loader.load('modelo.glb', function (gltf) {
+        scene.add(gltf.scene);
+      }, undefined, function (error) {
+        console.error('Error al cargar el modelo:', error);
+      });
+
+      // Resize
+      window.addEventListener('resize', onWindowResize);
+    }
+
+    function onWindowResize() {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+
+    function animate() {
+      requestAnimationFrame(animate);
+      renderer.render(scene, camera);
+    }
+  </script>
+</body>
 </html>
