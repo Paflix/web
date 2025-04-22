@@ -2,7 +2,7 @@
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <title>Visor 3D</title>
+    <title>Visor 3D Simple</title>
     <style>
       body {
         margin: 0;
@@ -25,45 +25,42 @@
       animate();
 
       function init() {
-        // Escena
         scene = new THREE.Scene();
-        scene.background = new THREE.Color(0x202020); // fondo gris oscuro
+        scene.background = new THREE.Color(0x121212); // Fondo negro suave
 
-        // Cámara
         camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
         camera.position.set(0, 1, 3);
 
-        // Render
         renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(renderer.domElement);
 
-        // Controles
         controls = new OrbitControls(camera, renderer.domElement);
 
-        // Luces
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
+        // 💡 Luces con intensidad más baja
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
         scene.add(ambientLight);
 
-        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.4);
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
         directionalLight.position.set(2, 4, 5);
         scene.add(directionalLight);
 
-        // Cargar modelo
+        // 📦 Cargar modelo
         const loader = new GLTFLoader();
         loader.load('modelo.glb', function (gltf) {
           const model = gltf.scene;
 
           model.traverse((node) => {
-            if (node.isMesh && !node.material) {
-              node.material = new THREE.MeshStandardMaterial({ color: 0xaaaaaa });
+            if (node.isMesh && (!node.material || node.material.transparent && node.material.opacity === 0)) {
+              node.material = new THREE.MeshStandardMaterial({ color: 0x8888ff }); // azul claro si no hay material
             }
           });
 
           scene.add(model);
+        }, undefined, function (error) {
+          console.error('Error cargando el modelo:', error);
         });
 
-        // Resize
         window.addEventListener('resize', () => {
           camera.aspect = window.innerWidth / window.innerHeight;
           camera.updateProjectionMatrix();
